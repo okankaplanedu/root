@@ -110,7 +110,26 @@ scrollTopBtn.addEventListener("click", () => {
   scrollTopBtn.blur(); // Erişilebilirlik için tıklamadan sonra focus kaybolur
 });
 </script>
+<script>
+function extractPlaylistId(url) {
+  const match = url.match(/list=([a-zA-Z0-9_-]+)/);
+  return match ? match[1] : null;
+}
 
+function fixYouTubePlaylistLinks() {
+  document.querySelectorAll('a.yt-play-button').forEach(a => {
+    const url = a.getAttribute('href');
+
+    const id = extractPlaylistId(url);
+    if (!id) return;
+
+    const cleanUrl = `https://www.youtube.com/playlist?list=${id}`;
+    a.setAttribute('href', cleanUrl);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", fixYouTubePlaylistLinks);
+</script>
 <!-- MIT Lisans Comment -->
 <!--
 MIT License
