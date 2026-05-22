@@ -111,25 +111,27 @@ scrollTopBtn.addEventListener("click", () => {
 });
 </script>
 <script>
-function extractPlaylistId(url) {
-  const match = url.match(/list=([a-zA-Z0-9_-]+)/);
-  return match ? match[1] : null;
+function fixYouTubePlaylist(url) {
+  // URL içindeki en son playlist ID'yi yakala
+  const matches = [...url.matchAll(/list=([a-zA-Z0-9_-]+)/g)];
+
+  if (matches.length === 0) return url;
+
+  const playlistId = matches[matches.length - 1][1];
+
+  return `https://www.youtube.com/playlist?list=${playlistId}`;
 }
 
-function fixYouTubePlaylistLinks() {
-  document.querySelectorAll('a.yt-play-button').forEach(a => {
-    const url = a.getAttribute('href');
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".yt-play-button").forEach(a => {
+    const original = a.getAttribute("href");
+    const fixed = fixYouTubePlaylist(original);
 
-    const id = extractPlaylistId(url);
-    if (!id) return;
-
-    const cleanUrl = `https://www.youtube.com/playlist?list=${id}`;
-    a.setAttribute('href', cleanUrl);
+    a.setAttribute("href", fixed);
   });
-}
-
-document.addEventListener("DOMContentLoaded", fixYouTubePlaylistLinks);
+});
 </script>
+
 <!-- MIT Lisans Comment -->
 <!--
 MIT License
